@@ -23,9 +23,12 @@ let package = Package(
     )
   ],
 
+  // firebase-swift: the forks with Windows fixes, which firebase-swift also
+  // lists. A package that depends on firebase-swift would otherwise get these
+  // upstream URLs: SwiftPM keeps the first one it meets for a package.
   dependencies: [
-    .package(url: "https://github.com/firebase/abseil-cpp-SwiftPM.git", "0.20250512.1"..<"0.20250513.0"),
-    .package(url: "https://github.com/firebase/boringssl-SwiftPM.git", "0.41.0"..<"0.42.0"),
+    .package(url: "https://github.com/mortenbekditlevsen/abseil-cpp-SwiftPM.git", branch: "windows-fixes-0.20250512.1"),
+    .package(url: "https://github.com/mortenbekditlevsen/boringSSL-SwiftPM.git", branch: "windows-0.41.0"),
   ],
 
   targets: [
