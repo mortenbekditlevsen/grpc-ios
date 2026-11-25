@@ -64,8 +64,8 @@ let package = Package(
         .headerSearchPath("./"),
         .headerSearchPath("include/"),
         .headerSearchPath("third_party/re2/"),
-        // Windows has no system zlib; gRPC-Core compiles the bundled one.
-        .headerSearchPath("third_party/zlib", .when(platforms: [.windows])),
+        // The bundled zlib, on every platform (Windows has no system one).
+        .headerSearchPath("third_party/zlib"),
         .headerSearchPath("third_party/upb/"),
         .headerSearchPath("third_party/utf8_range/"),
         .headerSearchPath("third_party/xxhash/"),
@@ -75,10 +75,14 @@ let package = Package(
         .define("GRPC_ARES", to: "0"),
         // As gRPC's CMake build: windows.h's min and max macros break re2.
         .define("NOMINMAX", .when(platforms: [.windows])),
+        // Prefixes the bundled zlib's symbols with "z_", so they don't clash
+        // with another copy of zlib in the same binary. Z_PREFIX leaves out
+        // z_errmsg, which has the prefix already.
+        .define("Z_PREFIX"),
+        .define("z_errmsg", to: "grpc_z_errmsg"),
       ],
       linkerSettings: [
         .linkedFramework("CoreFoundation"),
-        .linkedLibrary("z", .when(platforms: [.macOS, .iOS, .tvOS, .watchOS, .visionOS, .macCatalyst, .linux, .android])),
       ]
     ),
     .target(
