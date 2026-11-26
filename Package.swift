@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 import Foundation
@@ -85,7 +85,10 @@ let package = Package(
         .define("z_errmsg", to: "grpc_z_errmsg"),
       ],
       linkerSettings: [
-        .linkedFramework("CoreFoundation"),
+        // Only on Apple platforms: swift-build (Swift 6.4's default) passes
+        // -framework to the linker on Linux too, where it fails. 5.9 tools
+        // are needed to name visionOS.
+        .linkedFramework("CoreFoundation", .when(platforms: [.macOS, .macCatalyst, .iOS, .tvOS, .watchOS, .visionOS])),
       ]
     ),
     .target(
