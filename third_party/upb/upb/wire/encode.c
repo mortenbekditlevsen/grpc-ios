@@ -182,7 +182,8 @@ UPB_NOINLINE static char* encode_longvarint(char* ptr, upb_encstate* e,
       "br %[addr]\n"
       // Work around llvm/llvm-project#47432, where alignment directives inside
       // functions crash the compiler when generating SEH info on windows.
-      #ifndef __SEH__
+      // clang defines __SEH__ only for MinGW, so check _WIN32 for MSVC too.
+      #if !defined(__SEH__) && !defined(_WIN32)
       ".p2align " UPB_BTI_SHIFT_IMM
       #endif
       "0:\n"
